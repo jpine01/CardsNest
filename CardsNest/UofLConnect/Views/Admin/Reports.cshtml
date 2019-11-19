@@ -1,0 +1,111 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    table.dataTable thead tr {
+      background-color: #AE0001;
+    }
+
+    table.dataTable thead tr th {
+      color: white;
+    }
+
+    td.highlight {
+        font-weight: bold;
+        color: blue;
+    }
+</style>
+
+
+<h2> Reports Queue </h2>
+<br />
+<br />
+@section styles {
+    @Styles.Render("~/Content/table")
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/datatable")
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#ReportQueue').DataTable({
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+				responsive: true,
+				bLengthChange: true,
+				bFilter: true,
+				bInfo: true,
+                bSortCellsTop: true,
+                "order": [[1, "desc"]],
+                "iDisplayLenght": -1,
+                ajax: {
+					url: '@Url.Action("GetReportsQueue", "Admin")',
+					type: "POST",
+					dataType: 'json',
+                },
+                "createdRow": function ( row, data, index ) {
+                    if ( data[2] == 'Crisis Report' ) {
+                         $('td', row).eq(2).addClass('highlight');
+                    }
+                },
+                columns: [
+					{ "data": "Report_Time" },
+					{ "data": "Report_Date"	},
+					{ "data": "Report_Name" },
+                    { "data": "User_Name" },
+                    { "data": "Report_Message" },
+                    {
+                        "data": "Report_Number",
+                        "render": function (data, row, type, meta) {
+                            return '<button id="viewClick" name="viewClick" type="button" onclick="ResolveReport(' + data + ')" data-toggle="modal" data-target="#myModal" class="btn btn-info btn-md">Resolve</button>'
+                        }
+                    },
+				],
+				initComplete: function () {
+					console.log(this.api());
+				}
+            });
+        });
+
+        function ResolveReport(rId) {
+
+            var r = confirm("Do you want to Resolve this report?");
+            if (r == true) {
+                
+                $.ajax({
+                    url: '@Url.Action("ResolveReport", "Admin")',
+                    data: { id: rId },
+                    type: 'POST',
+                    success: function (data) {
+                        if (data.isSuccess)
+                            window.location.reload();
+                        else
+                            alert('Failed!');
+                    }
+                });
+            }
+        };
+    </script>
+}
+
+
+
+<body>
+    <div class="row">
+        <div class="col-xs-12">
+            <table id="ReportQueue" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>TIME</th>
+                        <th>DATE</th>
+                        <th>NAME</th>
+                        <th>EMAIL</th>
+                        <th>MESSAGE</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</body>

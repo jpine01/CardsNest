@@ -1,0 +1,234 @@
+﻿@model IList<UofLConnect.Models.Mentor.MentorInfo>
+
+@{
+    ViewBag.Title = "ViewProfileNoMatch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+<h2>@ViewBag.returnMentor.FName's Profile</h2>
+
+<style>
+    .alert-info {
+        color: red;
+        width: 50%;
+    }
+
+        .alert-info p {
+            text-align: center;
+        }
+</style>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title> Index </title>
+</head>
+<body>
+
+    @{
+
+
+
+    <div class="card">
+
+        <p id="returnMessage"></p>
+
+        @*<button class="cardbutton" align="right" onclick="getMentorUserID(@ViewBag.returnMentor.UserID)">Match</button>*@
+
+
+
+        <button class="cardbutton" onclick="location.href = ('/chat')" align="left">Message @ViewBag.returnMentor.UserName</button>
+
+
+        <h3>Match Percentage</h3>
+        <p>@ViewBag.returnMentor.MatchPercentage</p>
+
+        <h3>Name</h3>
+        <p>@ViewBag.returnMentor.FName   @ViewBag.returnMentor.LName</p>
+
+        <h3>User Name</h3>
+        <p>@ViewBag.returnMentor.UserName</p>
+
+        @*<h3>DOB</h3>
+        <p>@ViewBag.returnMentor.DOB</p>
+        <br />*@
+        @*<h3>Ethnicity</h3>
+        <p>@ViewBag.returnMentor.Ethnicity</p>*@
+
+        @*<h3>Orientation</h3>
+        <p>@ViewBag.returnMentor.Orientation</p>*@
+
+        <h3>Email</h3>
+        <p>@ViewBag.returnMentor.Email</p>
+
+        <h3>Gender</h3>
+        <p>@ViewBag.returnMentor.Gender</p>
+
+        <h3>UserName</h3>
+        <p>@ViewBag.returnMentor.UserName</p>
+
+        <h3>Age</h3>
+        <p>@ViewBag.returnMentor.Age</p>
+
+        <h3>Grade</h3>
+        <p>@ViewBag.grade</p>
+
+        <h3>Job</h3>
+        <p>@ViewBag.returnMentor.Job</p>
+
+        <h3>Industry</h3>
+        <p>@ViewBag.returnMentor.Industry</p>
+
+        <h3>Major</h3>
+        <p>@ViewBag.major</p>
+
+        <h3>Current Courses</h3>
+        @{
+            foreach (var course in @ViewBag.returnMentor.CurrentCourses)
+            {
+
+                <p>@course</p>
+            }
+        }
+
+        <h3>Previous Courses</h3>
+        @{
+            foreach (var course in @ViewBag.returnMentor.PrevCourses)
+            {
+
+                <p>@course</p>
+            }
+        }
+
+
+        @*CurrentCourses = GetUserCurrentCourses(row["UserID"].ToString()),
+        PrevCourses*@
+
+
+
+    </div>
+    }
+
+</body>
+</html>
+
+<style>
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        max-width: 1200px;
+        margin: auto;
+        text-align: center;
+    }
+
+    .cardbutton {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 30%;
+        font-size: 18px;
+    }
+</style>
+
+@*public string FName { get; set; }
+        public string LName { get; set; }
+        public string DOB { get; set; }
+        public string Ethnicity { get; set; }
+        public string Orientation { get; set; }
+        public string Email { get; set; }
+        public string Gender { get; set; }
+        public string UserName { get; set; }
+        public string Age { get; set; }
+        public string RoleName { get; set; }
+        public string Grade { get; set; }
+        public string Job { get; set; }
+        public string Major { get; set; }
+        public string StudentID { get; set; }
+        public string IsProfileCompleted { get; set; }
+        public string MatchPercentage { get; set; }
+        public string Industry
+        {
+            get { return _industry; }
+            set
+            {
+                switch (value)
+                {
+                    case "1":
+                        _industry = "Software Development";
+                        break;
+                    case "2":
+                        _industry = "Information Security";
+                        break;
+                    case "3":
+                        _industry = "BPM";
+                        break;
+                    case "4":
+                        _industry = "Help Desk";
+                        break;
+                    case "5":
+                        _industry = "Marketing";
+                        break;
+                    case "6":
+                        _industry = "Academic Research";
+                        break;
+                }
+            }
+        }
+        public List<string>
+    PrevCourses { get; set; }
+    public List<string>
+        CurrentCourses { get; set; }*@
+
+@section Scripts {
+    <script type="text/javascript">
+
+
+        function getMentorUserID(UserID) {
+
+            console.log(UserID);
+
+            postMentorInfo(UserID);
+
+        //    location.href = ('/Home/ViewProfile');
+
+
+
+        }
+
+        function postMentorInfo(UserID) {
+            var s = document.getElementById("returnMessage");
+
+           $.ajax({
+               type: "POST",
+               url: '@Url.Action("matchRequest", "Home")',
+               traditional: true,
+               data: {
+                   'UserID': UserID,
+               },
+               success: function (msg) {
+                   console.log("PostMentofInfo Executed Successfully")
+                   alert("Mentor Request Sent");
+                 //  location.href = ('/Home/ViewProfile');
+               },
+               error: function (req, status, error) {
+                   console.log(error)
+               }
+           })
+       }
+
+
+    </script>
+
+}
+
+

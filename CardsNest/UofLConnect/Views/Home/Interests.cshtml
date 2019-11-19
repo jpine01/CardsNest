@@ -1,0 +1,267 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model UofLConnect.Models.Home.InterestsModel
+
+
+<style>
+    .alert-info {
+        color: red;
+        width: 50%;
+    }
+
+        .alert-info p {
+            text-align: center;
+        }
+</style>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title> Interests </title>
+</head>
+<body>
+    @using (Html.BeginForm("InterestSave", "Home"))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h3> Interests </h3> <hr />
+            @Html.ValidationSummary(true, "", new
+       {
+           @class = "text-danger"
+       })
+
+            <div class="alert-info">
+                <p>@ViewBag.message</p>
+            </div>
+
+            <div class="col-md-6" style="min-width:450px;">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <b>Select Personal Interests: </b><br />
+                        <div class="col-md-10">
+                            @Html.ListBoxFor(model => model.PersonalInterests, Model.PersonalInterest_List, htmlAttributes: new { @class = "form-control", @style = "width:200px", @size = "10", @id = "SelPersonalInterests" })
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="col-md-3" style="padding-top:10%">
+                            <div>
+                                <input type="button" value="Add -->" onclick="UpdateCurrentPersonalList();" class="btn btn-default" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <b>Selected Personal Interests: </b><br />
+                                @Html.ListBoxFor(model => model.SelectedPersonalInterests, Model.SelectedPersonalInterestsList, htmlAttributes: new { @class = "form-control", @style = "width:180px", @id = "SelectedPersonalInterests" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <br />
+
+            <div class="col-md-6" style="min-width:450px;">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <b>Select Professional Interests: </b><br />
+                        @Html.ListBoxFor(model => model.ProfessionalInterests, Model.ProfessionalInterest_List, htmlAttributes: new { @class = "form-control", @style = "width:200px", @size = "10", @id = "SelProfessionalInterests" })
+                    </div>
+                    <div class="col-md-9">
+                        <div class="col-md-3" style="padding-top:10%">
+                            <div>
+                                <input type="button" value="Add -->" onclick="UpdateCurrentProfessionalList();" class="btn btn-default" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <b>Selected Professional Interests: </b><br />
+                                @Html.ListBoxFor(model => model.SelectedProfessionalInterests, Model.SelectedProfessionalInterestsList, htmlAttributes: new { @class = "form-control", @style = "width:180px", @id = "SelectedProfessionalInterests" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" onclick="SelectAllItems();" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+
+</body>
+</html>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        function UpdateCurrentProfessionalList() {
+            var sel = document.getElementById("SelProfessionalInterests");
+
+            var i;
+            for (i = sel.options.length - 1; i >= 0; i--) {
+                if (sel.options[i].selected) {
+                    document.getElementById("SelectedProfessionalInterests").add(new Option(sel.options[i].text, parseInt(sel.options[i].value)));
+                }
+            }
+            RemoveItem(sel);
+            GetProfessionalList();
+       }
+
+       function UpdateCurrentPersonalList() {
+           var sel = document.getElementById("SelPersonalInterests");
+
+           var i;
+           for (i = sel.options.length - 1; i >= 0; i--) {
+               if (sel.options[i].selected) {
+                   document.getElementById("SelectedPersonalInterests").add(new Option(sel.options[i].text, parseInt(sel.options[i].value)));
+               }
+           }
+           RemoveItem(sel);
+           GetPersonalList();
+       }
+
+        //function UpdatePrevList() {
+        //    var sel = document.getElementById("SelCourse");
+
+        //   var i;
+        //    for (i = sel.options.length - 1; i >= 0; i--) {
+        //        if (sel.options[i].selected) {
+        //            document.getElementById("PrevCourse").add(new Option(sel.options[i].text));
+        //        }
+        //    }
+        //    RemoveItem(sel);
+        //}
+
+        function SelectAllItems() {
+            var selectCurrent = document.getElementById("SelectedPersonalInterests");
+            var selectPrev = document.getElementById("SelectedProfessionalInterests");
+
+            var x;
+            var i;
+            for (i = selectCurrent.options.length - 1; i >= 0; i--) {
+                if (!selectCurrent.options[i].selected)
+                    selectCurrent.options[i].selected = true;
+            }
+
+            for (x = selectPrev.options.length - 1; x >= 0; x--) {
+                if (!selectPrev.options[x].selected)
+                    selectPrev.options[x].selected = true;
+            }
+
+            //// posts list to home controller
+            postLists();
+
+            alert("Re-Login To See Changes")
+
+        }
+
+        function RemoveItem(selectbox) {
+            var i;
+            for (i = selectbox.options.length - 1; i >= 0; i--) {
+                if (selectbox.options[i].selected)
+                    selectbox.remove(i);
+            }
+        }
+
+       $("#SelectedPersonalInterests").keydown(function (event) {
+            if (event.which != 46) // not delete key
+                return;
+           var sel = document.getElementById("SelectedPersonalInterests");
+            RemoveItem(sel);
+        });
+
+       $("#SelectedProfessionalInterests").keydown(function (event) {
+            if (event.which != 46) // not delete key
+                return;
+           var sel = document.getElementById("SelectedProfessionalInterests");
+            RemoveItem(sel);
+       });
+
+
+       // Holds professionalInterst Names
+       var professionalInterestNames = new Array();
+        // Holds personalIntersts Names
+       var professionalInterestIDs = new Array();
+
+
+        // Gets professional Interests Names and IDs into 2 seperate arrays
+       function GetProfessionalList() {
+           var sel = document.getElementById("SelectedProfessionalInterests");
+
+           var i;
+           for (i = sel.options.length - 1; i >= 0; i--)  {
+
+               //   professionalInterests.add(new Option(sel.options[i].text));
+               professionalInterestNames[i] = sel.options[i].text;
+
+               professionalInterestIDs[i] = sel.options[i].value;
+           }
+           console.log(professionalInterestIDs);
+           console.log(professionalInterestNames);
+       }
+
+       var personalInterestNames = new Array();
+       var personalInterestIDs = new Array();
+
+       // Gets personal Interests Names and IDs into 2 seperate arrays
+       function GetPersonalList() {
+           var sel = document.getElementById("SelectedPersonalInterests");
+
+           var i;
+           for (i = sel.options.length - 1; i >= 0; i--)  {
+
+               //   professionalInterests.add(new Option(sel.options[i].text));
+               personalInterestNames[i] = sel.options[i].text;
+
+               personalInterestIDs[i] = sel.options[i].value;
+           }
+
+           console.log(personalInterestNames);
+           console.log(personalInterestIDs);
+       }
+
+       console.log(personalInterestNames);
+
+       console.log(personalInterestIDs);
+
+       console.log(professionalInterestIDs);
+
+       console.log(professionalInterestNames);
+
+       //Calls ajax post request to getIntersts function in home controller
+       function postLists() {
+
+           $.ajax({
+               type: "POST",
+               url: '@Url.Action("getInterests", "Home")',
+               traditional: true,
+               data: {
+                   'personalInterestNames': personalInterestNames,
+                   'professionalInterestNames': professionalInterestNames,
+                   'personalInterestIDs': personalInterestIDs,
+                   'professionalInterestIDs': professionalInterestIDs
+               },
+               success: function (msg) {
+                   console.log(msg)
+               },
+               error: function (req, status, error) {
+                   console.log(error)
+               }
+           })
+       }
+    </script>
+
+}

@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "Donate";
+   // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!doctype html>
+
+<html>
+
+<head>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=sb"></script>
+
+    <style>
+        .paypB {
+            padding-top: 2em;
+            align-content: center;
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="form-horizontal">
+        <meta name="viewport" content="width=device-width" />
+        <h3> Donate </h3>
+        <hr />
+
+        <div align="center">
+
+            <div id="paypal-button-container">
+                <script>paypal.Buttons().render('#paypal-button-container');</script>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+

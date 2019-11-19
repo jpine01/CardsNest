@@ -1,0 +1,87 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model UofLConnect.Models.Home.SettingsModel
+
+<style>
+    .deleteAcctBtn {
+        box-shadow: inset 0px 39px 0px -24px #e67a73;
+        background-color: #e4685d;
+        border-radius: 4px;
+        border: 1px solid #ffffff;
+        display: inline-block;
+        cursor: pointer;
+        color: #ffffff;
+        font-family: Arial;
+        font-size: 15px;
+        padding: 9px 39px;
+        text-decoration: none;
+        text-shadow: 0px 1px 0px #b23e35;
+    }
+
+    .deleteAcctBtn:hover {
+        background-color: #eb675e;
+    }
+
+    .deleteAcctBtn:active {
+        position: relative;
+        top: 1px;
+    }
+
+    .delDiv{
+        border:1px solid black;
+        height:100px;
+    }
+
+    .smsDiv{
+        border:1px solid black;
+        height:150px;
+    }
+</style>
+
+<h2>Settings</h2>
+<hr />
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="smsDiv">
+        <p style="padding-left: 15px; padding-top: 10px;">Check below if you want to receive alerts to your phone.</p>
+        <div class="form-group col-md-4">
+            <div class="col-md-2 bestDiv" style="width: 5px;">
+                @Html.CheckBoxFor(model => model.ReceiveSMS, new { id = "mentorRadio" })
+                @Html.ValidationMessageFor(model => model.ReceiveSMS, "", new { @class = "text-danger" })
+            </div>
+            @Html.LabelFor(model => model.ReceiveSMS, "Receive SMS Alerts", htmlAttributes: new { @class = "control-label col-md-10" })
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10" style="margin-left:10px;">
+                <input type="button" id="btnSave" value="SAVE" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+   
+    <br />
+ 
+
+    <div class="delDiv">
+        <p style="padding-left: 15px; padding-top: 10px;">If you want to delete your account from our system click below. Accounts are NOT recoverable after they have been deleted.</p>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="button" onclick="delAcct();" value="Delete Account" class="btn btn-default deleteAcctBtn" />
+            </div>
+        </div>
+    </div>
+
+
+}
+
+<script>
+
+    function delAcct () {
+        window.location.href = '@Url.Action("DelAcct", "Home")';
+    };
+</script>

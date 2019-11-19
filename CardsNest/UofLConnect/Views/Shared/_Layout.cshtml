@@ -1,0 +1,162 @@
+﻿@using UofLConnect.Utilities;
+
+<!DOCTYPE html>
+
+<style>
+    #donateLink {
+        background: #FFAC2D;
+        color: black !important;
+        font-weight: bold;
+        font-style: italic;
+        border-radius: 15%;
+        font-size: 16px !important;
+    }
+</style>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - UofL Connect</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @RenderSection("styles", required: false)
+
+    @if (UserInfo.UserID != 0 && UtilClass.IsDashboard)
+    {
+        <link href="~/Content/DashBoardStyles.css" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    }
+
+</head>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @*@Html.ActionLink("UofL Connect", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+
+            <a href="@Url.Action("Index", "Home")" class="navbar-brand">
+                <img src="~/Content/images/uofllogo.png" title="title" alt="UofL Connect" />
+            </a>
+        </div>
+        <div style="float:right;" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+
+                <li><a href="~/Home/Report" class="navbar-links">Report</a></li>
+                <li></li>
+                <li><a href="~/Home/Donate" id="donateLink" class="navbar-links">Donate</a></li>
+                <li></li>
+
+                @if (UserInfo.IsAdmin && UserInfo.IsApproved == "True" && UserInfo.UserID != 0)
+                {
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle navbar-links" data-toggle="dropdown" role="button" aria-expanded="false">
+                            Admin <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="~/Admin/AccountApproval">Account Approvals</a></li>
+                            <li><a href="~/Admin/AccountDenied">Accounts Denied</a></li>
+                            <li><a href="~/Admin/Reports">Reports Queue</a></li>
+
+                            <li class="divider"></li>
+                            <li><a href="~/Admin/EmailBlast">Email Blast</a></li>
+                            @*<li><a href="~/Admin/ActivityReport">Activity Report</a></li>*@
+                        </ul>
+                    </li>
+                }
+
+                @if (UserInfo.UserID != 0)
+                {
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle navbar-links" data-toggle="dropdown" role="button" aria-expanded="false">
+                            @UserInfo.FName @UserInfo.LName <span class="caret"></span>
+                            @*<i class="fa fa-users"></i>*@
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            @if (UserInfo.IsApproved == "True")
+                            {
+                                <li><a href="~/Home/Network">DashBoard</a></li>
+                                <li><a href="~/Home/UserProfile">Profile</a></li>
+
+                                <li class="divider"></li>
+                            }
+
+                            <li><a href="~/Home/LogOut">LogOut</a></li>
+                        </ul>
+                    </li>
+                }
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+@if (UserInfo.UserID != 0 && UtilClass.IsDashboard)
+{
+    <div class="wrapper" style="float:left;min-height:100%">
+        <nav id="sidebar" class="active">
+            <div class="sidebar-header">
+                <strong>Dash</strong>
+
+            </div>
+            <ul class="list-unstyled components">
+                @*<li class="active">
+                        <a href="#" data-target="#homeSubmenu"><i class="glyphicon glyphicon-home"></i>Home</a>
+                    </li>*@
+                <li>
+                    <a href="~/Home/Network" data-target="#networkingSubmenu"><i class="glyphicon glyphicon-globe"></i>Network</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Login", "Auth")"><i class="glyphicon glyphicon-comment"></i>Messages</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Calendar", "Home")"><i class="glyphicon glyphicon-calendar"></i>Events</a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("Settings", "Home")"><i class="glyphicon glyphicon-cog"></i>Settings</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}
+
+@Scripts.Render("~/bundles/jquery")
+
+<div class="container body-content" style="padding-left:0px;height:100%">
+    @RenderBody()
+</div>
+
+
+
+@Scripts.Render("~/bundles/bootstrap")
+@RenderSection("scripts", required: false)
+
+
+<style>
+    .navbar-fixed-top {
+        background-color: #AE0001;
+    }
+
+    .navbar-brand {
+        color: white !important;
+    }
+
+    .navbar-links {
+        color: white !important;
+    }
+
+    .fc-header-toolbar {
+        height: 25px;
+    }
+
+    button:hover, a:hover {
+        opacity: 0.7;
+    }
+</style>

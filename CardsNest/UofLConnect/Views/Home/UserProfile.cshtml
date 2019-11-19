@@ -1,0 +1,393 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model UofLConnect.Models.Home.ProfileModel
+
+
+<style>
+    .alert-info {
+        color: red;
+        width: 50%;
+    }
+
+        .alert-info p {
+            text-align: center;
+        }
+</style>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title> Index </title>
+</head>
+<body>
+    @using (Html.BeginForm("ProfileSave", "Home"))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h3> Profile </h3> <hr />
+            @Html.ValidationSummary(true, "", new {
+                @class = "text-danger"
+            })
+
+            <div class="alert-info">
+                <p>@ViewBag.message</p>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FirstName, "First Name:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LastName, "Last Name:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*<div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StudentID, "Student ID:", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.StudentID, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.StudentID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>*@
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, "Email:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DOB, "Date of Birth:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Ethnicity, "Ethnicity:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Ethnicity, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Ethnicity, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Gender, "Gender:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Gender, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SexualOrientation, "Sexual Orientation:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.SexualOrientation, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SexualOrientation, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-6" style="min-width:450px;">
+                @*<div class="col-md-3">
+                    <div class="form-group">
+                        <b>Select Courses: </b><br />
+                        @Html.ListBoxFor(model => model.SelectedCourses, Model.CourseList, htmlAttributes: new { @class = "form-control", @style = "width:100px", @size = "10", @id = "SelCourse" })
+                    </div>
+                </div>*@
+
+                @*<div class="col-md-9">
+                    <div class="col-md-3" style="padding-top:10%">
+                        <div>
+                            <input type="button" value="Add -->" onclick="UpdateCurrentList();" class="btn btn-default" />
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <b>Current Courses: </b><br />
+                            @Html.ListBoxFor(model => model.CurrentCourses, Model.CurrentCourseList, htmlAttributes: new { @class = "form-control", @style = "width:140px", @id = "CurrentCourse" })
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-3" style="padding-top:10%">
+                        <div>
+                            <input type="button" value="Add -->" onclick="UpdatePrevList();" class="btn btn-default" />
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <b>Previous Courses: </b><br />
+                            @Html.ListBoxFor(model => model.PreviousCourses, Model.PreviousCourseList, htmlAttributes: new { @class = "form-control", @style = "width:140px", @id = "PrevCourse" })
+                        </div>
+                    </div>
+                </div>*@
+
+                <div class="form-group">
+                    <br />
+                    <br />
+
+                </div>
+
+                @*@Html.CheckBoxFor(model => model.No_Path, new { @checked = "checked" })*@
+
+                @*<div class="form-group">
+                        <b>Major(s): </b><br />
+                        <br />
+                        <b>No Path: </b>
+                        @Html.CheckBox("NoPath", new { value = Model.No_Path})
+                        <br />
+                        <b>Web Development: </b>
+                        @Html.CheckBox("WebDev", new { value = Model.Web_Dev })
+                        <br />
+                        <b>Information Security: </b>
+                        @Html.CheckBox("InfoSec", new { value = Model.Info_Sec })
+                        <br />
+                        <b>Business Process Management: </b>
+                        @Html.CheckBox("BPM", new { value = Model.BPM })
+                    </div>
+
+
+                    public int Grade { get; set; }
+
+                    public string Job { get; set; }
+
+                    public bool No_Path { get; set; }
+
+                    public bool Web_Dev { get; set; }
+
+                    public bool Info_Sec { get; set; }
+
+                    public bool BPM { get; set; }*@
+
+                <div class="form-group">
+                    <b>Major(s): </b><br />
+                    <br />
+                    <b>No Path: </b>
+                    @Html.CheckBoxFor(model => model.No_Path)
+                    <br />
+                    <b>Web Development: </b>
+                    @Html.CheckBoxFor(model => model.Web_Dev)
+                    <br />
+                    <b>Information Security: </b>
+                    @Html.CheckBoxFor(model => model.Info_Sec)
+                    <br />
+                    <b>Business Process Management: </b>
+                    @Html.CheckBoxFor(model => model.BPM)
+                </div>
+
+                <br />
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Grade, "Grade:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.Grade, Model.Grade_List, "Select Grade", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Grade, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <br />
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Job, "Current Job:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Job, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Job, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <br />
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Industry, "Industry:", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.Industry, Model.Industry_List, "Select Industry", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Industry, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <br />
+
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Next" onclick="SelectAllItems();" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+
+</body>
+</html>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        function UpdateCurrentList() {
+            var sel = document.getElementById("SelCourse");
+
+            var i;
+            for (i = sel.options.length - 1; i >= 0; i--) {
+                if (sel.options[i].selected) {
+                    document.getElementById("CurrentCourse").add(new Option(sel.options[i].text, sel.options[i].value));
+                }
+            }
+            RemoveItem(sel);
+
+            GetCurrentList();
+        }
+
+        function UpdatePrevList() {
+            var sel = document.getElementById("SelCourse");
+
+            var i;
+            for (i = sel.options.length - 1; i >= 0; i--) {
+                if (sel.options[i].selected) {
+                    document.getElementById("PrevCourse").add(new Option(sel.options[i].text, sel.options[i].value));
+                }
+            }
+            RemoveItem(sel);
+
+            GetPreviousList();
+        }
+
+        function SelectAllItems() {
+            var selectCurrent = document.getElementById("CurrentCourse");
+            var selectPrev = document.getElementById("PrevCourse");
+
+            var x;
+            var i;
+            for (i = selectCurrent.options.length - 1; i >= 0; i--) {
+                if (!selectCurrent.options[i].selected)
+                    selectCurrent.options[i].selected = true;
+            }
+
+            for (x = selectPrev.options.length - 1; x >= 0; x--) {
+                if (!selectPrev.options[x].selected)
+                    selectPrev.options[x].selected = true;
+            }
+
+            // Sends post request to register courses in home controller
+            //postCourses();
+
+        }
+
+        function RemoveItem(selectbox) {
+            var i;
+            for (i = selectbox.options.length - 1; i >= 0; i--) {
+                if (selectbox.options[i].selected)
+                    selectbox.remove(i);
+            }
+        }
+
+
+        $("#CurrentCourse").keydown(function (event) {
+            if (event.which != 46) // not delete key
+                return;
+            var sel = document.getElementById("CurrentCourse");
+            RemoveItem(sel);
+        });
+
+        $("#PrevCourse").keydown(function (event) {
+            if (event.which != 46) // not delete key
+                return;
+            var sel = document.getElementById("PrevCourse");
+            RemoveItem(sel);
+        });
+
+
+       // Holds professionalInterst Names
+       var currentCourseNames = new Array();
+        // Holds personalIntersts Names
+       var currentCourseIDs = new Array();
+
+
+        // Gets professional Interests Names and IDs into 2 seperate arrays
+       function GetCurrentList() {
+           var sel = document.getElementById("CurrentCourse");
+
+           var i;
+           for (i = sel.options.length - 1; i >= 0; i--)  {
+
+               //   professionalInterests.add(new Option(sel.options[i].text));
+               currentCourseNames[i] = sel.options[i].text;
+
+               currentCourseIDs[i] = sel.options[i].value;
+           }
+           console.log(currentCourseNames);
+           console.log(currentCourseIDs);
+       }
+
+       var previousCourseNames = new Array();
+       var previousCourseIDs = new Array();
+
+       // Gets personal Interests Names and IDs into 2 seperate arrays
+       function GetPreviousList() {
+           var sel = document.getElementById("PrevCourse");
+
+           var i;
+           for (i = sel.options.length - 1; i >= 0; i--)  {
+
+               //   professionalInterests.add(new Option(sel.options[i].text));
+               previousCourseNames[i] = sel.options[i].text;
+
+               previousCourseIDs[i] = sel.options[i].value;
+           }
+
+           console.log(previousCourseNames);
+           console.log(previousCourseIDs);
+       }
+
+        console.log(previousCourseNames);
+
+        console.log(previousCourseIDs);
+
+        console.log(currentCourseNames);
+
+        console.log(currentCourseIDs);
+
+       //Calls ajax post request to getIntersts function in home controller
+        function postCourses() {
+
+           $.ajax({
+               type: "POST",
+               url: '@Url.Action("registerCourses", "Home")',
+               traditional: true,
+               data: {
+                   'previousCourseNames': previousCourseNames,
+                   'previousCourseIDs': previousCourseIDs,
+                   'currentCourseNames': currentCourseNames,
+                   'currentCourseIDs': currentCourseIDs
+               },
+               success: function (msg) {
+                   console.log(msg)
+               },
+               error: function (req, status, error) {
+                   console.log(error)
+               }
+           })
+       }
+
+    </script>
+
+}
+

@@ -1,0 +1,140 @@
+﻿@model UofLConnect.Models.Admin.AccountApprovalModel
+
+<style>
+    .modal-body {
+        max-height: calc(100vh - 210px);
+        overflow-y: auto;
+    }
+
+</style>
+
+@using (Html.BeginForm())
+{@Html.AntiForgeryToken()
+
+<div class="modal-dialog modal-lg">
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">@Model.FName @Model.LName</h4>
+        </div>
+        <div class="modal-body" style="height:450px;">
+            <div class="alert-info">
+                <p id="alert-info"></p>
+            </div>
+
+            <input type="hidden" id="UserID" name="UserID" value="@Model.UserID">
+            <input type="hidden" id="OldRole" name="OldRole" value="@Model.Role">
+
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FName, "First Name:", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.FName, new { htmlAttributes = new { @class = "form-control", maxlength = "50" } })
+                                @Html.ValidationMessageFor(model => model.FName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.LName, "Last Name:", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.LName, new { htmlAttributes = new { @class = "form-control", maxlength = "50" } })
+                                @Html.ValidationMessageFor(model => model.LName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Email, "Email:", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", maxlength = "50" } })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StudentID, "Student ID:", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.StudentID, new { htmlAttributes = new { @class = "form-control", minlenth = "7", maxlength = "7" } })
+                                @Html.ValidationMessageFor(model => model.StudentID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UserName, "UserName:", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", maxlength = "50" } })
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Role, "Role:", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.Role, Model.Role_List, "Select", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="smtClick" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+
+</div>
+}
+
+<script>
+  
+    $('#smtClick').click( function() {
+        var fName = document.getElementById('FName').value;
+        var lName = document.getElementById('LName').value;
+        var email = document.getElementById('Email').value;
+        var studentID = document.getElementById('StudentID').value;
+        var userName = document.getElementById('UserName').value;
+        var role = document.getElementById('Role').value;
+        var userID = document.getElementById('UserID').value;
+        var oldRole = document.getElementById('OldRole').value;
+
+        var data = {
+            model: {
+                UserID: userID,
+                FName: fName,
+                LName: lName,
+                Email: email,
+                StudentID: studentID,
+                UserName: userName,
+                Role: role,
+                OldRole: oldRole
+            }
+        };
+
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: URL = '@Url.Action("AcctApprovalSave", "Admin")',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: function (data) {
+
+                if (data.isSuccess) {
+                    window.location.reload();
+                }
+                else {
+                    var paragraph = document.getElementById("alert-info");
+
+                    paragraph.textContent = "Check your data and try again. Fill all required Fields please";
+
+                    $(".alert-info").css("display", "block");
+                }
+            }
+        })
+    });
+</script>

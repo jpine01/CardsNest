@@ -1,0 +1,254 @@
+﻿@model IList<UofLConnect.Models.Mentor.MentorInfo>
+
+@{
+    ViewBag.Title = "MatchedMentorNetwork";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+
+
+
+@*<div align="center">
+        <h2>Network</h2>
+    </div>*@       @* pm.FirstName = row["FName"].ToString();
+    pm.LastName = row["LName"].ToString();
+    pm.DOB = row["DOB"].ToString();
+    pm.Ethnicity = row["Ethnicity"].ToString();
+    pm.SexualOrientation = row["Orientation"].ToString();
+    pm.Email = row["Email"].ToString();
+    pm.Gender = row["Gender"].ToString();
+    pm.StudentID = row["StudentID"].ToString();
+    pm.Grade = int.Parse(row["Grade"].ToString());
+    pm.Job = row["Job"].ToString();
+    pm.Major = int.Parse(row["Major"].ToString());
+    pm.Industry = int.Parse(row["Industry"].ToString());*@
+
+    @{
+        <div align="center">
+            <div class="card">
+                <h1>Your Mentee:</h1>
+                <br />
+                <h2> @ViewBag.pm.FirstName @ViewBag.pm.LastName </h2>
+                <br />
+                <p class="title"> @ViewBag.pm.Job</p>
+                <br />
+                <button class="cardbutton" onclick="viewProfile(@ViewBag.matchedUserID)">View Profile</button>
+            </div>
+
+            <br />
+            <br />
+            <h2><b>Top Matches</b></h2>
+            <br />
+            <br />
+        </div>
+    }
+    <br>
+
+    <div class="grid">
+
+        <!-- Add icon library -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        @{
+            int count = 0;
+            foreach (var mentor in Model)
+            {
+                count++;
+                if (count < 7 && ViewBag.myID != int.Parse(mentor.UserID))
+                {
+                    <div class="card">
+                        <p> @mentor.MatchPercentage </p>
+                        <h1>@mentor.FName @mentor.LName</h1>
+                        <p class="title">@mentor.Job</p>
+                        <p>@mentor.Industry</p>
+                        
+
+                        <p><button onclick="getMentorInfo(@count)" class="cardbutton">View Profile</button></p>
+                    </div>
+                }
+            }
+        }
+
+    </div>
+
+    <br />
+    <div align="center">
+        <h3>Matches</h3>
+        <br />
+        <br />
+    </div>
+
+    <div class="grid">
+
+        @{
+            count = 0;
+            foreach (var mentor in Model)
+            {
+                count++;
+                if (count >= 6)
+                {
+                    <div class="card">
+                        @*<img class=".card"src="~/Content/images/no_avatar.png"/>*@
+                        <p> @mentor.MatchPercentage </p>
+                        <h1>@mentor.FName @mentor.LName</h1>
+                        <p class="title">@mentor.Job</p>
+                        <p>@mentor.Industry</p>
+
+                        <p><button onclick="getMentorInfo(@count)" class="cardbutton">View Profile</button></p>
+                    </div>
+                }
+            }
+        }
+    </div>
+
+
+
+
+    <style>
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .title {
+            color: grey;
+            font-size: 18px;
+        }
+
+        .cardbutton {
+            border: none;
+            outline: 0;
+            display: inline-block;
+            padding: 8px;
+            color: white;
+            background-color: #000;
+            text-align: center;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+        }
+
+        .a {
+            text-decoration: none;
+            font-size: 22px;
+            color: black;
+        }
+
+        button:hover, a:hover {
+            opacity: 0.7;
+        }
+
+        .grid {
+            /* Grid Fallback */
+            display: flex;
+            flex-wrap: wrap;
+            /* Supports Grid */
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-auto-rows: minmax(150px, auto);
+            grid-gap: 1em;
+        }
+
+        .module {
+            /* Demo-Specific Styles */
+            background: #eaeaea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            /* Flex Fallback */
+            margin-left: 5px;
+            margin-right: 5px;
+            flex: 1 1 200px;
+        }
+    </style>
+
+
+    @section Scripts {
+
+        <script type="text/javascript">
+
+
+        
+        function getMentorInfo(count) {
+
+            console.log(count);
+
+            postMentorInfo(count);
+
+        //    location.href = ('/Home/ViewProfile');
+
+
+
+        }
+
+        function viewProfile(userID) {
+
+            console.log(userID);
+
+            viewMenteeProfile(userID);
+
+        //    location.href = ('/Home/ViewProfile');
+
+
+
+        }
+
+             function postMentorInfo(count) {
+
+           $.ajax({
+               type: "POST",
+               url: '@Url.Action("postMentorInfo", "Home")',
+               traditional: true,
+               data: {
+                   'mentorIndex': count,
+               },
+               success: function (msg) {
+                   console.log("PostMentofInfo Executed Successfully")
+                   location.href = ('/Home/ViewProfileNoMatch');
+               },
+               error: function (req, status, error) {
+                   console.log(error)
+               }
+           })
+       }
+
+                function getUserID(userID) {
+
+                    console.log(userID);
+
+                    acceptMatch(userID);
+                }
+
+                function viewMenteeProfile(userID) {
+
+                        $.ajax({
+               type: "POST",
+               url: '@Url.Action("viewMatchedProfile", "Home")',
+               traditional: true,
+               data: {
+                   'userID': userID,
+               },
+               success: function (msg) {
+                   console.log("Accept Match Executed Successfully")
+                   location.href = ('/Home/ViewNetworkProfile');
+               },
+               error: function (req, status, error) {
+                   console.log(error)
+                            }
+
+           })
+
+                }
+
+
+        </script>
+    }
+
+

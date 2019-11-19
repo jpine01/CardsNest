@@ -1,0 +1,148 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    #myModal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place front is invalid - may break your css so removed */
+        padding-top: 100px; /* Location of the box - don't know what this does?  If it is to move your modal down by 100px, then just change top below to 100px and remove this*/
+        left: 0;
+        right: 0; /* Full width (left and right 0) */
+        top: 0;
+        bottom: 0; /* Full height top and bottom 0 */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        z-index: 9999; /* Sit on top - higher than any other z-index in your site*/
+    }
+
+    table.dataTable thead tr {
+      background-color: #AE0001;
+    }
+
+    table.dataTable thead tr th {
+      color: white;
+    }
+</style>
+
+<h2> Account Approval Queue </h2>
+<br />
+<br />
+<br />
+<br />
+@section styles {
+    @Styles.Render("~/Content/table")
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/datatable")
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#ApproveQueue').DataTable({
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+				responsive: true,
+				bLengthChange: true,
+				bFilter: true,
+				bInfo: true,
+				bSortCellsTop: true,
+                "iDisplayLenght": -1,
+                ajax: {
+					url: '@Url.Action("GetAccountsApprovalQueue", "Admin")',
+					type: "POST",
+					dataType: 'json',
+                },
+                columns: [
+					{ "data": "FName" },
+					{ "data": "LName"	},
+					{ "data": "Email" },
+                    { "data": "StudentID" },
+                    { "data": "UserName" },
+                    { "data": "Type" },
+                    { "data": "RoleName" },
+                    {
+                        "data": "UserID",
+                        "render": function (data, row, type, meta) {
+                            return '<button id="viewClick" name="viewClick" type="button" onclick="ModalView(' + data + ')" data-toggle="modal" data-target="#myModal" class="btn btn-info btn-md"><span class="glyphicon glyphicon-pencil"></span></button>'
+                        }
+                    },
+                    {
+                        "data": "UserID",
+                        "render": function (data, row, type, meta) {
+                            return '<button id="approveClick" name="approveClick" value="Approve" type="button" onclick="ApproveOrDenyAcct(' + data + ', this.value' + ')" class="btn btn-info btn-md"><span class="glyphicon glyphicon-ok"></span></button>'
+                        }
+                    },
+                    {
+                        "data": "UserID",
+                        "render": function (data, row, type, meta) {
+                            return '<button id="denyClick" name="denyClick" value="Deny" type="button" onclick="ApproveOrDenyAcct(' + data + ', this.value' + ')" class="btn btn-info btn-md"><span class="glyphicon glyphicon-remove"></span></button>'
+                        }
+                    },
+				],
+				initComplete: function () {
+					console.log(this.api());
+				}
+            });
+        });
+
+        function ModalView(uId) {
+             $.ajax({
+                url: '@Url.Action("_AcctApprovalModal", "Admin")',
+                data: { id: uId },
+                type: 'POST',
+                success: function (data) {
+                    $('#myModal').html(data);
+                }
+             });
+        };
+
+        function ApproveOrDenyAcct(uId, mode) {
+
+            var r = confirm("Do you want to " + mode + " this user?");
+            if (r == true) {
+
+                $.ajax({
+                    url: '@Url.Action("ApproveOrDenyAcct", "Admin")',
+                    data: { id: uId, mode: mode },
+                    type: 'POST',
+                    success: function (data) {
+                        if (data.isSuccess)
+                            window.location.reload();
+                        else
+                            alert('Failed!');
+                    }
+                });
+            }
+        };
+    </script>
+}
+
+<body>
+    <div class="row">
+        <div class="col-xs-12">
+            <table id="ApproveQueue" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>FIRST NAME</th>
+                        <th>LAST NAME</th>
+                        <th>EMAIL</th>
+                        <th>STUDENT ID</th>
+                        <th>USER NAME</th>
+                        <th>TYPE</th>
+                        <th>ROLE NAME</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="container" style="width:70%">
+        <div class="modal-fade" id="myModal" role="dialog">
+            <!--Display modal-->
+        </div>
+    </div>
+</body>

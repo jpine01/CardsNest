@@ -1,0 +1,174 @@
+﻿@model UofLConnect.Models.Home.CalendarEventsModel
+
+<style>
+    .modal-body {
+        max-height: calc(100vh - 210px);
+        overflow-y: auto;
+    }
+</style>
+
+@using (Html.BeginForm())
+{@Html.AntiForgeryToken()
+
+<div class="modal-dialog modal-lg" style="margin-top: 90px;">
+
+    <div class="modal-content">
+        <div class="modal-header" style="height: 50px;">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">@ViewBag.title</h4>
+        </div>
+        <div class="modal-body" style="height:450px;">
+            <div class="alert-info">
+                <p id="alert-info"></p>
+            </div>
+
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.title, "Title:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.title, new { htmlAttributes = new { @class = "form-control", maxlength="50" } })
+                                @Html.ValidationMessageFor(model => model.title, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                @Html.CheckBoxFor(model => model.allDay, new { id = "allDayCheck" })
+                                @Html.ValidationMessageFor(model => model.allDay, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.allDay, "All Day Event", htmlAttributes: new { @class = "control-label col-md-10" })
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                @Html.CheckBoxFor(model => model.RepeatingEvent, new { id = "repeatCheck" })
+                                @Html.ValidationMessageFor(model => model.RepeatingEvent, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.RepeatingEvent, "Repeating Event", htmlAttributes: new { @class = "control-label col-md-10" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Visibility, "Visibility:", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.Visibility, Model.Visibility_List, "Select", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Visibility, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.start, "Start:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.start, new { htmlAttributes = new { @class = "form-control", @type = "datetime-local"} })
+                                @Html.ValidationMessageFor(model => model.start, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: none;" id="endDiv">
+                            @Html.LabelFor(model => model.end, "End:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.end, new { htmlAttributes = new { @class = "form-control", @type = "datetime-local" } })
+                                @Html.ValidationMessageFor(model => model.end, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Description, "Info:", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @cols = 150, @rows = 5, maxlength="250" })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+        </div>
+        <div class="modal-footer" style="height: 70px;">
+            @if (ViewBag.id == "")
+            {
+                <button type="button" id="smtClick" value="Add" onclick="SubmitClick(this.value)" class="btn btn-primary">Add</button>
+            }
+            else
+            {
+                <button type="button" id="smtClick" value="Edit" onclick="SubmitClick(this.value)" class="btn btn-primary">Save</button>
+            }
+
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+
+</div>
+}
+
+<script>
+    $(document).ready(function () {
+        document.getElementById("allDayCheck").checked = true;
+
+        var allDay = '@(ViewBag.allDay)';
+        console.log(allDay);
+        if (allDay == 'False') {
+            document.getElementById("allDayCheck").checked = false
+            document.getElementById('endDiv').style.display = "block";
+        }
+
+        $('#allDayCheck').change(function () {
+            if (this.checked) {
+                document.getElementById('endDiv').style.display = "none";
+            }
+            else {
+                document.getElementById('endDiv').style.display = "block";
+            }
+            $('#allDayCheck').val(this.checked);
+        });
+    });
+
+    function SubmitClick(mode) {
+        var id = '@(ViewBag.id)';
+        var title = document.getElementById('title').value;
+        var allDay = document.getElementById('allDayCheck').checked;
+        var repeatCheck = document.getElementById('repeatCheck').checked;
+        var visibility = document.getElementById('Visibility').value;
+        var start = document.getElementById('start').value;
+        var end = document.getElementById('end').value;
+        var description = document.getElementById('Description').value;
+
+        var data = {
+            model: {
+                id: id,
+                title: title,
+                allDay: allDay,
+                RepeatingEvent: repeatCheck,
+                Visibility: visibility,
+                start: start,
+                end: end,
+                Description: description,
+                Mode: mode,
+            }
+        };
+
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            url: URL = '@Url.Action("AddEditCalendar", "Home")',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: function (data) {
+                    
+                if (data.isSuccess) {
+                    window.location.reload();
+                }
+                else {
+                    var paragraph = document.getElementById("alert-info");
+
+                    paragraph.textContent = "Check your data and try again. Fill all required Fields please";
+
+                    $(".alert-info").css("display", "block");
+                }
+            }
+        })
+    };
+</script>

@@ -1,0 +1,105 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <style>
+        table.dataTable thead tr {
+            background-color: #AE0001;
+        }
+
+            table.dataTable thead tr th {
+                color: white;
+            }
+    </style>
+
+<h2> Accounts Denied Queue </h2>
+<br />
+<br />
+<br />
+<br />
+@section styles {
+    @Styles.Render("~/Content/table")
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/datatable")
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#DeniedQueue').DataTable({
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+				responsive: true,
+				bLengthChange: true,
+				bFilter: true,
+				bInfo: true,
+				bSortCellsTop: true,
+                "iDisplayLenght": -1,
+                ajax: {
+					url: '@Url.Action("GetAccountsDeniedQueue", "Admin")',
+					type: "POST",
+					dataType: 'json',
+                },
+                columns: [
+					{ "data": "FName" },
+					{ "data": "LName"	},
+					{ "data": "Email" },
+                    { "data": "StudentID" },
+                    { "data": "UserName" },
+                    { "data": "Type" },
+                    { "data": "RoleName" },
+                    {
+                        "data": "UserID",
+                        "render": function (data, row, type, meta) {
+                            return '<button id="viewClick" name="viewClick" type="button" onclick="DeniedUserDelete(' + data + ')" data-toggle="modal" data-target="#myModal" class="btn btn-info btn-md">Delete</button>'
+                        }
+                    },
+				],
+				initComplete: function () {
+					console.log(this.api());
+				}
+            });
+        });
+
+        function DeniedUserDelete(uId) {
+
+            var r = confirm("Do you want to Delete this user from the system?");
+            if (r == true) {
+
+                $.ajax({
+                    url: '@Url.Action("DeniedUserDelete", "Admin")',
+                    data: { id: uId },
+                    type: 'POST',
+                    success: function (data) {
+                        if (data.isSuccess)
+                            window.location.reload();
+                        else
+                            alert('Failed!');
+                    }
+                });
+            }
+        };
+    </script>
+}
+
+
+
+<body>
+    <div class="row">
+        <div class="col-xs-12">
+            <table id="DeniedQueue" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>FIRST NAME</th>
+                        <th>LAST NAME</th>
+                        <th>EMAIL</th>
+                        <th>STUDENT ID</th>
+                        <th>USER NAME</th>
+                        <th>TYPE</th>
+                        <th>ROLE NAME</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</body>

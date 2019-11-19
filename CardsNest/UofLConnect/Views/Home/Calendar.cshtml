@@ -1,0 +1,73 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div id="calendar"></div>
+@section scripts {
+    @Styles.Render("~/Content/calendarCSS")
+    @Scripts.Render("~/bundles/calendarJS")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            // page is now ready, initialize the calendar...
+            var events = [];
+            $('#calendar').fullCalendar({
+                // put your options and callbacks here
+                header: {
+                    left: 'prev,next today,addEventButton',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                customButtons: {
+                    addEventButton: {
+                        text: 'Add Event',
+                        click: function() {
+                             $.ajax({
+                                url: '@Url.Action("_CalendarModal", "Home")',
+                                data: { info: "Add" },
+                                type: 'POST',
+                                success: function (data) {
+                                    $('#CalModal').html(data);
+                                    $('#CalModal').modal('show');
+                                }
+                             });
+                        }
+                    }
+                },
+                eventClick: function(calEvent, jsEvent, view) {
+
+                    $.ajax({
+                        url: '@Url.Action("_CalendarModal", "Home")',
+                        data: { info: calEvent.id },
+                        type: 'POST',
+                        success: function (data) {
+                            $('#CalModal').html(data);
+                            $('#CalModal').modal('show');
+                        }
+                    });
+
+                    // change the border color just for fun
+                    $(this).css('border-color', 'red');
+
+                },
+                //defaultDate: '2019-11-12',
+                defaultView: 'month',
+                editable: true,
+                
+                events: '@Url.RouteUrl(new{ action="GetCalEvents", controller="Home"})'
+            });
+        })
+
+
+    </script>
+}
+
+<body>
+    <div class="container" style="width:300px;">
+        <div class="modal fade" id="CalModal" role="dialog">
+            <!--The partial view _CalendarModal will display here-->
+        </div>
+    </div>
+</body>

@@ -1,0 +1,229 @@
+﻿
+@{
+    ViewBag.Title = "ViewNetworkProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>@ViewBag.pm.FirstName's Profile</h2>
+
+<style>
+    .alert-info {
+        color: red;
+        width: 50%;
+    }
+
+        .alert-info p {
+            text-align: center;
+        }
+</style>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title> Index </title>
+</head>
+<body>
+
+    @{
+
+
+//pm.FirstName = row["FName"].ToString();
+//pm.LastName = row["LName"].ToString();
+//pm.DOB = row["DOB"].ToString();
+//pm.Ethnicity = row["Ethnicity"].ToString();
+//pm.SexualOrientation = row["Orientation"].ToString();
+//pm.Email = row["Email"].ToString();
+//pm.Gender = row["Gender"].ToString();
+//pm.StudentID = row["StudentID"].ToString();
+//pm.Grade = int.Parse(row["Grade"].ToString());
+//pm.Job = row["Job"].ToString();
+//pm.Major = int.Parse(row["Major"].ToString());
+//pm.Industry = int.Parse(row["Industry"].ToString());
+
+
+
+    <div class="card">
+
+        <p id="returnMessage"></p>
+
+        @*<button align="right" onclick="">Match</button>*@
+
+
+
+        <button class="cardbutton" onclick="location.href = ('/chat')" align="left">Message @ViewBag.userName</button>
+
+
+        <h3>Name</h3>
+        <p>@ViewBag.pm.FirstName   @ViewBag.pm.LastName</p>
+
+        <h3>UserName</h3>
+        <p>@ViewBag.userName</p>
+
+        <h3>DOB</h3>
+        <p>@ViewBag.pm.DOB</p>
+
+
+        @*<h3>Ethnicity</h3>
+        <p>@ViewBag.pm.Ethnicity </p>*@
+
+        @*<h3>Orientation</h3>
+        <p>@ViewBag.pm.SexualOrientation</p>*@
+
+        <h3>Email</h3>
+        <p>@ViewBag.pm.Email</p>
+
+        <h3>Gender</h3>
+        <p>@ViewBag.pm.Gender</p>
+
+        @*<h3>Age</h3>
+        <p>@ViewBag.pm.Age </p>*@
+
+        <h3>Grade</h3>
+        <p>@ViewBag.grade</p>
+
+        <h3>Job</h3>
+        <p>@ViewBag.pm.Job </p>
+
+        @*<h3>Industry</h3>
+        <p>@ViewBag.pm.Industry</p>*@
+
+        <h3>Major</h3>
+        <p>@ViewBag.major</p>
+
+
+
+    </div>
+    }
+
+</body>
+</html>
+
+<style>
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        max-width: 1200px;
+        margin: auto;
+        text-align: center;
+    }
+    .cardbutton {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+    }
+    .title {
+        color: grey;
+        font-size: 18px;
+    }
+
+    .a {
+        text-decoration: none;
+        font-size: 22px;
+        color: black;
+    }
+
+</style>
+
+@*public string FName { get; set; }
+        public string LName { get; set; }
+        public string DOB { get; set; }
+        public string Ethnicity { get; set; }
+        public string Orientation { get; set; }
+        public string Email { get; set; }
+        public string Gender { get; set; }
+        public string UserName { get; set; }
+        public string Age { get; set; }
+        public string RoleName { get; set; }
+        public string Grade { get; set; }
+        public string Job { get; set; }
+        public string Major { get; set; }
+        public string StudentID { get; set; }
+        public string IsProfileCompleted { get; set; }
+        public string MatchPercentage { get; set; }
+        public string Industry
+        {
+            get { return _industry; }
+            set
+            {
+                switch (value)
+                {
+                    case "1":
+                        _industry = "Software Development";
+                        break;
+                    case "2":
+                        _industry = "Information Security";
+                        break;
+                    case "3":
+                        _industry = "BPM";
+                        break;
+                    case "4":
+                        _industry = "Help Desk";
+                        break;
+                    case "5":
+                        _industry = "Marketing";
+                        break;
+                    case "6":
+                        _industry = "Academic Research";
+                        break;
+                }
+            }
+        }
+        public List<string>
+    PrevCourses { get; set; }
+    public List<string>
+        CurrentCourses { get; set; }*@
+
+@section Scripts {
+    <script type="text/javascript">
+
+
+        function getMentorUserID(UserID) {
+
+            console.log(UserID);
+
+            postMentorInfo(UserID);
+
+        //    location.href = ('/Home/ViewProfile');
+
+
+
+        }
+
+        function postMentorInfo(UserID) {
+            var s = document.getElementById("returnMessage");
+
+           $.ajax({
+               type: "POST",
+               url: '@Url.Action("matchRequest", "Home")',
+               traditional: true,
+               data: {
+                   'UserID': UserID,
+               },
+               success: function (msg) {
+                   console.log("PostMentofInfo Executed Successfully")
+                   alert("Mentor Request Sent");
+                 //  location.href = ('/Home/ViewProfile');
+               },
+               error: function (req, status, error) {
+                   console.log(error)
+               }
+           })
+       }
+
+
+    </script>
+
+}
+
+
+

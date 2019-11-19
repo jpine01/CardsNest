@@ -1,0 +1,238 @@
+﻿@model UofLConnect.Models.Home.ProfileModel
+
+@{
+    ViewBag.Title = "CourseRegistration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<style>
+    .alert-info {
+        color: red;
+        width: 50%;
+    }
+
+        .alert-info p {
+            text-align: center;
+        }
+</style>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title> Index </title>
+</head>
+<body>
+    <div class="form-horizontal">
+        <h3> Class Sign Up </h3> <hr />
+        @using (Html.BeginForm("courseSave", "Home"))
+        {
+
+
+            <div style="padding-top:10%; padding-left:10%" align="center" class="col-md-6">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <b>Select Courses: </b><br />
+                        @Html.ListBoxFor(model => model.SelectedCourses, Model.CourseList, htmlAttributes: new { @class = "form-control", @style = "width:100px", @size = "10", @id = "SelCourse" })
+                    </div>
+                </div>
+
+                <div class="col-md-9" style="padding-left:10%">
+                    <div class="col-md-3" style="padding-top:10%">
+                        <div>
+                            <input type="button" value="Add -->" onclick="UpdateCurrentList();" class="btn btn-default" />
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <b>Current Courses: </b><br />
+                            @Html.ListBoxFor(model => model.CurrentCourses, Model.CurrentCourseList, htmlAttributes: new { @class = "form-control", @style = "width:140px", @id = "CurrentCourse" })
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-3" style="padding-top:10%">
+                        <div>
+                            <input type="button" value="Add -->" onclick="UpdatePrevList();" class="btn btn-default" />
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <b>Previous Courses: </b><br />
+                            @Html.ListBoxFor(model => model.PreviousCourses, Model.PreviousCourseList, htmlAttributes: new { @class = "form-control", @style = "width:140px", @id = "PrevCourse" })
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <div align="right" class="">
+                        <input type="submit" value="Next" onclick="SelectAllItems();" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+        
+</body>
+</html>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        function UpdateCurrentList() {
+            var sel = document.getElementById("SelCourse");
+
+            var i;
+            for (i = sel.options.length - 1; i >= 0; i--) {
+                if (sel.options[i].selected) {
+                    document.getElementById("CurrentCourse").add(new Option(sel.options[i].text, sel.options[i].value));
+                }
+            }
+            RemoveItem(sel);
+
+            GetCurrentList();
+        }
+
+        function UpdatePrevList() {
+            var sel = document.getElementById("SelCourse");
+
+            var i;
+            for (i = sel.options.length - 1; i >= 0; i--) {
+                if (sel.options[i].selected) {
+                    document.getElementById("PrevCourse").add(new Option(sel.options[i].text, sel.options[i].value));
+                }
+            }
+            RemoveItem(sel);
+
+            GetPreviousList();
+        }
+
+        function SelectAllItems() {
+            var selectCurrent = document.getElementById("CurrentCourse");
+            var selectPrev = document.getElementById("PrevCourse");
+
+            var x;
+            var i;
+            for (i = selectCurrent.options.length - 1; i >= 0; i--) {
+                if (!selectCurrent.options[i].selected)
+                    selectCurrent.options[i].selected = true;
+            }
+
+            for (x = selectPrev.options.length - 1; x >= 0; x--) {
+                if (!selectPrev.options[x].selected)
+                    selectPrev.options[x].selected = true;
+            }
+
+            // Sends post request to register courses in home controller
+            postCourses();
+
+        }
+
+        function RemoveItem(selectbox) {
+            var i;
+            for (i = selectbox.options.length - 1; i >= 0; i--) {
+                if (selectbox.options[i].selected)
+                    selectbox.remove(i);
+            }
+        }
+
+
+        $("#CurrentCourse").keydown(function (event) {
+            if (event.which != 46) // not delete key
+                return;
+            var sel = document.getElementById("CurrentCourse");
+            RemoveItem(sel);
+        });
+
+        $("#PrevCourse").keydown(function (event) {
+            if (event.which != 46) // not delete key
+                return;
+            var sel = document.getElementById("PrevCourse");
+            RemoveItem(sel);
+        });
+
+
+       // Holds professionalInterst Names
+       var currentCourseNames = new Array();
+        // Holds personalIntersts Names
+       var currentCourseIDs = new Array();
+
+
+        // Gets professional Interests Names and IDs into 2 seperate arrays
+       function GetCurrentList() {
+           var sel = document.getElementById("CurrentCourse");
+
+           var i;
+           for (i = sel.options.length - 1; i >= 0; i--)  {
+
+               //   professionalInterests.add(new Option(sel.options[i].text));
+               currentCourseNames[i] = sel.options[i].text;
+
+               currentCourseIDs[i] = sel.options[i].value;
+           }
+           console.log(currentCourseNames);
+           console.log(currentCourseIDs);
+       }
+
+       var previousCourseNames = new Array();
+       var previousCourseIDs = new Array();
+
+       // Gets personal Interests Names and IDs into 2 seperate arrays
+       function GetPreviousList() {
+           var sel = document.getElementById("PrevCourse");
+
+           var i;
+           for (i = sel.options.length - 1; i >= 0; i--)  {
+
+               //   professionalInterests.add(new Option(sel.options[i].text));
+               previousCourseNames[i] = sel.options[i].text;
+
+               previousCourseIDs[i] = sel.options[i].value;
+           }
+
+           console.log(previousCourseNames);
+           console.log(previousCourseIDs);
+       }
+
+        console.log(previousCourseNames);
+
+        console.log(previousCourseIDs);
+
+        console.log(currentCourseNames);
+
+        console.log(currentCourseIDs);
+
+       //Calls ajax post request to getIntersts function in home controller
+        function postCourses() {
+
+           $.ajax({
+               type: "POST",
+               url: '@Url.Action("registerCourses", "Home")',
+               traditional: true,
+               data: {
+                   'previousCourseNames': previousCourseNames,
+                   'previousCourseIDs': previousCourseIDs,
+                   'currentCourseNames': currentCourseNames,
+                   'currentCourseIDs': currentCourseIDs
+               },
+               success: function (msg) {
+                   console.log(msg)
+                  
+               },
+               error: function (req, status, error) {
+                   console.log(error)
+               }
+           })
+       }
+
+    </script>
+
+}
+
+

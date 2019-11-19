@@ -1,0 +1,253 @@
+﻿@model UofLConnect.Models.Home.RegisterModel
+
+
+<style>
+    .modal-header {
+        background-color: #AE0001;
+    }
+
+    .modal-footer {
+        background-color: #AE0001;
+    }
+
+</style>
+
+@using (Html.BeginForm())
+{@Html.AntiForgeryToken()
+
+<div class="modal-dialog modal-lg">
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Register</h4>
+        </div>
+        <div class="modal-body" style="height:450px;">
+            <div class="alert-info">
+                <p id="alert-info"></p>
+            </div>
+
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="form-group col-md-4">
+                            <div class="col-md-4">
+                                @Html.RadioButtonFor(model => model.RegisterType, "Mentor", new { id = "mentorRadio" })
+                                @Html.ValidationMessageFor(model => model.RegisterType, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.RegisterType, "Mentor", htmlAttributes: new { @class = "control-label col-md-2" })
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="col-md-4">
+                                @Html.RadioButtonFor(model => model.RegisterType, "Mentee", new { id = "menteeRadio", @checked = "checked" })
+                                @Html.ValidationMessageFor(model => model.RegisterType, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.RegisterType, "Mentee", htmlAttributes: new { @class = "control-label col-md-2" })
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="col-md-4">
+                                @Html.RadioButtonFor(model => model.RegisterType, "Alumni", new { id = "alumnRadio" })
+                                @Html.ValidationMessageFor(model => model.RegisterType, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.RegisterType, "Alumni", htmlAttributes: new { @class = "control-label col-md-2" })
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <div class="col-md-12">
+                    <div class="form-group" id="divStudentSchoolYear" style="display: block;">
+                        @Html.LabelFor(model => model.SchoolYear, "School Year:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.SchoolYear, Model.SchoolYear_List, "Select", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.SchoolYear, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="divAlumniRole" style="display: none;">
+                        @Html.LabelFor(model => model.AlumniRole, "Register As:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.AlumniRole, Model.AlumniRole_List, "Select", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.AlumniRole, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.UserName, "Username:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Password, "Password:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @type = "password" } })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FirstName, "First Name:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", maxlength="20" } })
+                            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LastName, "Last Name:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", maxlength="20" } })
+                            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div id="stuIDdiv">
+                        <br />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StudentID, "Student ID:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.StudentID, new { htmlAttributes = new { @class = "form-control", maxlength="7" } })
+                                @Html.ValidationMessageFor(model => model.StudentID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="alumnEmailDiv" style="display: none;">
+                        <br />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.AlumniEmail, "Email:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.AlumniEmail, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.AlumniEmail, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="stuEmailDiv" style="display: block;">
+                        <br />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StudentEmail, "Email:*", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-4" style="padding-right:0px">
+                                @Html.EditorFor(model => model.StudentEmail, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.StudentEmail, "", new { @class = "text-danger" })
+                            </div>
+                            <span class="col-md-4" style="padding-left:0px">@ViewBag.email</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="submitClick" class="btn btn-danger">Submit</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+
+</div>
+}
+
+<script>
+    $(document).ready(function () {
+
+        $("input[name=RegisterType]:radio").change(function () {
+            if (document.getElementById('alumnRadio').checked) {
+                document.getElementById('stuIDdiv').style.display = "none";
+                document.getElementById('divStudentSchoolYear').style.display = "none";
+                document.getElementById('alumnEmailDiv').style.display = "block";
+                document.getElementById('divAlumniRole').style.display = "block";
+                document.getElementById('stuEmailDiv').style.display = "none";
+            } else {
+                document.getElementById('stuIDdiv').style.display = "block";
+                document.getElementById('alumnEmailDiv').style.display = "none";
+                document.getElementById('stuEmailDiv').style.display = "block";
+                document.getElementById('divStudentSchoolYear').style.display = "block";
+                document.getElementById('divAlumniRole').style.display = "none";
+            }
+        });
+
+        $("#submitClick").click(function () {
+            var registerType;
+            var radios = document.getElementsByName('RegisterType');
+
+            for (var i = 0, length = radios.length; i < length; i++)
+            {
+                if (radios[i].checked)
+                {
+                    // do whatever you want with the checked radio
+                    registerType = radios[i].value;
+
+                    // only one radio can be logically checked, don't check the rest
+                    break;
+                }
+            }
+
+            var userName = document.getElementById('UserName').value;
+            var password = document.getElementById('Password').value;
+            var firstName = document.getElementById('FirstName').value;
+            var lastName = document.getElementById('LastName').value;
+            var studentID = document.getElementById('StudentID').value;
+            var studentEmail = document.getElementById('StudentEmail').value;
+            var alumniEmail = document.getElementById('AlumniEmail').value;
+            var schoolYear = document.getElementById('SchoolYear').value;
+            var alumniRole = document.getElementById('AlumniRole').value;
+
+            var data = {
+                model: {
+                    RegisterType: registerType,
+                    SchoolYear: schoolYear,
+                    AlumniRole: alumniRole,
+                    UserName: userName,
+                    Password: password,
+                    FirstName: firstName,
+                    LastName: lastName,
+                    StudentID: studentID,
+                    StudentEmail: studentEmail,
+                    AlumniEmail: alumniEmail
+                }
+            };
+
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json',
+                url: URL = '@Url.Action("RegisterSubmit", "Home")',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function (data) {
+                    if (data.message.length > 1) {
+                        var paragraph = document.getElementById("alert-info");
+
+                        paragraph.textContent = data.message;
+
+                        $(".alert-info").css("display", "block");
+                    }
+                    else
+                    if (data.isSuccess) {
+                        var paragraph = document.getElementById("alert-info");
+
+                        paragraph.textContent = "Account Created! Proceed to login.";
+
+                        $(".alert-info").css("display", "block");
+
+                        // Clear txt boxes
+                        document.getElementById('UserName').value = '';
+                        document.getElementById('Password').value = '';
+                        document.getElementById('FirstName').value = '';
+                        document.getElementById('LastName').value = '';
+                        document.getElementById('StudentID').value = '';
+                        document.getElementById('StudentEmail').value = '';
+                        document.getElementById('AlumniEmail').value = '';
+                    }
+                    else {
+                        var paragraph = document.getElementById("alert-info");
+
+                        paragraph.textContent = "Check your data and try again. Fill all required Fields please";
+
+                        $(".alert-info").css("display", "block");
+                    }
+                }
+            })
+        }); 
+    });
+</script>
